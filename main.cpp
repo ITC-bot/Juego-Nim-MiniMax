@@ -7,10 +7,11 @@ Programa basado en el juego Nim de 2 jugadores: Maquina vs Maquina*/
 #include <cmath>
 #include <limits>
 #include <ctime>
+#include <cstdlib>
 
 using namespace std;
 const int INF = numeric_limits<int>::max(); // valor infinito
-const int MAX_PROF = 4; // profundidad maxima
+const int MAX_PROF = 15; // Si se requiere mas precision, aumente la profundidad maxima
 
 // Estructura para representar un estado del juego
 struct Estado {
@@ -18,7 +19,7 @@ struct Estado {
     int jugadorActual;
 };
 
-// Función que genera los sucesores de un estado
+// Funcion que genera los sucesores de un estado
 vector<Estado> generarSucesores(Estado estado) {
     vector<Estado> sucesores;
     for (int i = 1; i <= 3; i++) {
@@ -30,6 +31,7 @@ vector<Estado> generarSucesores(Estado estado) {
     return sucesores;
 }
 
+// Funcion minimax
 int MiniMax(Estado u, int Prof, bool Mano) {
     if (u.palitos == 1) {
         return Mano ? -1 : 1;
@@ -48,12 +50,13 @@ int MiniMax(Estado u, int Prof, bool Mano) {
     return m;
 }
 
+//Funcion que controla los movimientos de la "Maquina inteligente"
 int maquina(int palos) {
     int m = -2;
     int mejorMovimiento = 1;
     vector<Estado> sucesores = generarSucesores({palos, 1});
     for (Estado v : sucesores) {
-        int t = MiniMax(v, 4, false);
+        int t = MiniMax(v, MAX_PROF, false);
         if (t > m) {
             m = t;
             mejorMovimiento = palos - v.palitos;
@@ -62,8 +65,8 @@ int maquina(int palos) {
     return mejorMovimiento;
 }
 
-//Funcion para que el usuario seleccione cuantos palitos quitar
-int jugador(int palos) {
+//Funcion para la maquina "Menos inteligente" haga sus jugadas
+int aleatorio(int palos) {
     int maquina = rand() % 3 + 1;
     if (palos < 3) {
         maquina = palos;
@@ -74,10 +77,9 @@ int jugador(int palos) {
     return maquina;
 }
 
-
 int main() {
-    int palitos = 21;
-    int jugadorActual = 2;
+    int palitos = 30; //Si se requiere que el juego sea con mas o menos palitos altere esta variable
+    int jugadorActual = rand() % 2 + 1; //Numero aleatorio entre 1 y 2 para ver que jugador inicia
     cout << "Juego de los Palillos" << endl;
     cout << "=====================" << endl;
     while (palitos > 1) {
@@ -86,11 +88,12 @@ int main() {
             cout << "|";
         }
         cout << endl;
+
         if (jugadorActual == 1) {
-            int palitosQuitados = jugador(palitos);
+            int palitosQuitados = aleatorio(palitos);
             palitos -= palitosQuitados;
             cout << "La maquina Aleatoria quita " << palitosQuitados << " palos." << endl;
-            jugadorActual = 2;
+            jugadorActual = 0;
         }
         else {
             int palitosQuitadosMaquina = maquina(palitos);
