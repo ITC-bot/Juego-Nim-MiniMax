@@ -19,6 +19,9 @@ struct Estado {
     int jugadorActual;
 };
 
+// Variable global para llevar la cuenta de los nodos visitados
+long long contadorNodos = 0;
+
 // Funcion que genera los sucesores de un estado
 vector<Estado> generarSucesores(Estado estado) {
     vector<Estado> sucesores;
@@ -33,6 +36,7 @@ vector<Estado> generarSucesores(Estado estado) {
 
 // Funcion minimax
 int MiniMax(Estado u, int Prof, bool Mano) {
+    contadorNodos++; // Incrementamos el contador de nodos
     if (u.palitos == 1) {
         return Mano ? -1 : 1;
     }
@@ -78,7 +82,7 @@ int aleatorio(int palos) {
 }
 
 int main() {
-    int palitos = 30; //Si se requiere que el juego sea con mas o menos palitos altere esta variable
+    int palitos = 19; //Si se requiere que el juego sea con mas o menos palitos altere esta variable
     int jugadorActual = rand() % 2 + 1; //Numero aleatorio entre 1 y 2 para ver que jugador inicia
     cout << "Juego de los Palillos" << endl;
     cout << "=====================" << endl;
@@ -113,5 +117,6 @@ int main() {
     else {
         cout << "El maquina Aleatoria gana" << endl;
     }
+    cout << "Nodos visitados por la maquina Minimax: " << contadorNodos << endl; // imprimir el número de nodos visitados
     return 0;
 }
